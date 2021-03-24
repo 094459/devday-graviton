@@ -1,0 +1,427 @@
+{
+  "Resources": {
+    "InstanceSSMCBFA3CF0": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-ide/InstanceSSM/Resource"
+      }
+    },
+    "InstanceSSMDefaultPolicy6E4EFE93": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3BucketA0173B39"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3BucketA0173B39"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "InstanceSSMDefaultPolicy6E4EFE93",
+        "Roles": [
+          {
+            "Ref": "InstanceSSMCBFA3CF0"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-ide/InstanceSSM/DefaultPolicy/Resource"
+      }
+    },
+    "Cloud9SecurityGroupA8B33029": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Allow ssh access to ec2 instances from anywhere",
+        "GroupName": "cloud9-ssh-access-sg",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1"
+          }
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "18.184.138.224/27",
+            "Description": "allow c9 service ssh access",
+            "FromPort": 22,
+            "IpProtocol": "tcp",
+            "ToPort": 22
+          },
+          {
+            "CidrIp": "18.184.203.128/27",
+            "Description": "allow c9 service access",
+            "FromPort": 22,
+            "IpProtocol": "tcp",
+            "ToPort": 22
+          }
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "c9-vpc:ExportsOutputRefDemoCloud9VPC8871F024014B0437"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-ide/Cloud9 SecurityGroup/Resource"
+      }
+    },
+    "DemoCloud9IDEInstanceProfileB1471BCB": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "InstanceSSMCBFA3CF0"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-ide/DemoCloud9IDE/InstanceProfile"
+      }
+    },
+    "DemoCloud9IDE0D36E714": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "IamInstanceProfile": {
+          "Ref": "DemoCloud9IDEInstanceProfileB1471BCB"
+        },
+        "ImageId": {
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmarm64gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+        },
+        "InstanceType": "m6g.large",
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "Cloud9SecurityGroupA8B33029",
+              "GroupId"
+            ]
+          }
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "c9-vpc:ExportsOutputRefDemoCloud9VPCpublicSubnet1Subnet7E5CFDAB950D0894"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Cloud9"
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash\nmkdir -p $(dirname '/tmp/",
+                {
+                  "Fn::Select": [
+                    0,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Fn::Select": [
+                    1,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "')\naws s3 cp 's3://",
+                {
+                  "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3BucketA0173B39"
+                },
+                "/",
+                {
+                  "Fn::Select": [
+                    0,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Fn::Select": [
+                    1,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "' '/tmp/",
+                {
+                  "Fn::Select": [
+                    0,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Fn::Select": [
+                    1,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "'\nset -e\nchmod +x '/tmp/",
+                {
+                  "Fn::Select": [
+                    0,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Fn::Select": [
+                    1,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "'\n'/tmp/",
+                {
+                  "Fn::Select": [
+                    0,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Fn::Select": [
+                    1,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "'"
+              ]
+            ]
+          }
+        }
+      },
+      "DependsOn": [
+        "InstanceSSMDefaultPolicy6E4EFE93",
+        "InstanceSSMCBFA3CF0"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "c9-ide/DemoCloud9IDE/Resource"
+      }
+    },
+    "C9HostEIP": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "InstanceId": {
+          "Ref": "DemoCloud9IDE0D36E714"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-ide/C9HostEIP"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Modules": "aws-cdk=1.94.1,@aws-cdk/assets=1.72.0,@aws-cdk/aws-cloudwatch=1.72.0,@aws-cdk/aws-ec2=1.72.0,@aws-cdk/aws-events=1.72.0,@aws-cdk/aws-iam=1.72.0,@aws-cdk/aws-kms=1.72.0,@aws-cdk/aws-logs=1.72.0,@aws-cdk/aws-s3=1.72.0,@aws-cdk/aws-s3-assets=1.72.0,@aws-cdk/aws-ssm=1.72.0,@aws-cdk/cloud-assembly-schema=1.72.0,@aws-cdk/core=1.72.0,@aws-cdk/cx-api=1.72.0,@aws-cdk/region-info=1.72.0,jsii-runtime=Python/3.8.5"
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-ide/CDKMetadata/Default"
+      }
+    }
+  },
+  "Parameters": {
+    "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmarm64gp2C96584B6F00A464EAD1953AFF4B05118Parameter": {
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+      "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-arm64-gp2"
+    },
+    "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3BucketA0173B39": {
+      "Type": "String",
+      "Description": "S3 bucket for asset \"fb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90\""
+    },
+    "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1": {
+      "Type": "String",
+      "Description": "S3 key for asset version \"fb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90\""
+    },
+    "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90ArtifactHashD0C974A0": {
+      "Type": "String",
+      "Description": "Artifact hash for asset \"fb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90\""
+    }
+  },
+  "Outputs": {
+    "C9PrivateIP": {
+      "Description": "C9 Private IP",
+      "Value": {
+        "Fn::GetAtt": [
+          "DemoCloud9IDE0D36E714",
+          "PrivateIp"
+        ]
+      },
+      "Export": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              "eu-central-1:",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":c9-ide:cloud9-private-ip"
+            ]
+          ]
+        }
+      }
+    },
+    "C9PublicIP": {
+      "Description": "C9 Public IP",
+      "Value": {
+        "Fn::GetAtt": [
+          "DemoCloud9IDE0D36E714",
+          "PublicIp"
+        ]
+      },
+      "Export": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              "eu-central-1:",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":c9-ide:cloud9-public-ip"
+            ]
+          ]
+        }
+      }
+    }
+  }
+}

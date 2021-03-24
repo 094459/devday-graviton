@@ -1,0 +1,283 @@
+{
+  "Resources": {
+    "DemoCloud9VPC8871F024": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.44.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "c9-vpc/DemoCloud9VPC"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/Resource"
+      }
+    },
+    "DemoCloud9VPCpublicSubnet1Subnet7E5CFDAB": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.44.0.0/24",
+        "VpcId": {
+          "Ref": "DemoCloud9VPC8871F024"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "public"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": "c9-vpc/DemoCloud9VPC/publicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/publicSubnet1/Subnet"
+      }
+    },
+    "DemoCloud9VPCpublicSubnet1RouteTable4F2FF692": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "DemoCloud9VPC8871F024"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "c9-vpc/DemoCloud9VPC/publicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/publicSubnet1/RouteTable"
+      }
+    },
+    "DemoCloud9VPCpublicSubnet1RouteTableAssociation71E63EEC": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "DemoCloud9VPCpublicSubnet1RouteTable4F2FF692"
+        },
+        "SubnetId": {
+          "Ref": "DemoCloud9VPCpublicSubnet1Subnet7E5CFDAB"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/publicSubnet1/RouteTableAssociation"
+      }
+    },
+    "DemoCloud9VPCpublicSubnet1DefaultRoute2CB817D7": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "DemoCloud9VPCpublicSubnet1RouteTable4F2FF692"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "DemoCloud9VPCIGW7CDC61C4"
+        }
+      },
+      "DependsOn": [
+        "DemoCloud9VPCVPCGW14F503D3"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/publicSubnet1/DefaultRoute"
+      }
+    },
+    "DemoCloud9VPCpublicSubnet1EIP278A3B50": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "c9-vpc/DemoCloud9VPC/publicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/publicSubnet1/EIP"
+      }
+    },
+    "DemoCloud9VPCpublicSubnet1NATGateway54A57AA4": {
+      "Type": "AWS::EC2::NatGateway",
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "DemoCloud9VPCpublicSubnet1EIP278A3B50",
+            "AllocationId"
+          ]
+        },
+        "SubnetId": {
+          "Ref": "DemoCloud9VPCpublicSubnet1Subnet7E5CFDAB"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "c9-vpc/DemoCloud9VPC/publicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/publicSubnet1/NATGateway"
+      }
+    },
+    "DemoCloud9VPCpublicSubnet2Subnet36081424": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.44.1.0/24",
+        "VpcId": {
+          "Ref": "DemoCloud9VPC8871F024"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "public"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": "c9-vpc/DemoCloud9VPC/publicSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/publicSubnet2/Subnet"
+      }
+    },
+    "DemoCloud9VPCpublicSubnet2RouteTableC7564F18": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "DemoCloud9VPC8871F024"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "c9-vpc/DemoCloud9VPC/publicSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/publicSubnet2/RouteTable"
+      }
+    },
+    "DemoCloud9VPCpublicSubnet2RouteTableAssociation910F7E68": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "DemoCloud9VPCpublicSubnet2RouteTableC7564F18"
+        },
+        "SubnetId": {
+          "Ref": "DemoCloud9VPCpublicSubnet2Subnet36081424"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/publicSubnet2/RouteTableAssociation"
+      }
+    },
+    "DemoCloud9VPCpublicSubnet2DefaultRouteB8155D7B": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "DemoCloud9VPCpublicSubnet2RouteTableC7564F18"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "DemoCloud9VPCIGW7CDC61C4"
+        }
+      },
+      "DependsOn": [
+        "DemoCloud9VPCVPCGW14F503D3"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/publicSubnet2/DefaultRoute"
+      }
+    },
+    "DemoCloud9VPCIGW7CDC61C4": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "c9-vpc/DemoCloud9VPC"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/IGW"
+      }
+    },
+    "DemoCloud9VPCVPCGW14F503D3": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "DemoCloud9VPC8871F024"
+        },
+        "InternetGatewayId": {
+          "Ref": "DemoCloud9VPCIGW7CDC61C4"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/DemoCloud9VPC/VPCGW"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Modules": "aws-cdk=1.94.1,@aws-cdk/assets=1.72.0,@aws-cdk/aws-cloudwatch=1.72.0,@aws-cdk/aws-ec2=1.72.0,@aws-cdk/aws-events=1.72.0,@aws-cdk/aws-iam=1.72.0,@aws-cdk/aws-kms=1.72.0,@aws-cdk/aws-logs=1.72.0,@aws-cdk/aws-s3=1.72.0,@aws-cdk/aws-s3-assets=1.72.0,@aws-cdk/aws-ssm=1.72.0,@aws-cdk/cloud-assembly-schema=1.72.0,@aws-cdk/core=1.72.0,@aws-cdk/cx-api=1.72.0,@aws-cdk/region-info=1.72.0,jsii-runtime=Python/3.8.5"
+      },
+      "Metadata": {
+        "aws:cdk:path": "c9-vpc/CDKMetadata/Default"
+      }
+    }
+  },
+  "Outputs": {
+    "ExportsOutputRefDemoCloud9VPC8871F024014B0437": {
+      "Value": {
+        "Ref": "DemoCloud9VPC8871F024"
+      },
+      "Export": {
+        "Name": "c9-vpc:ExportsOutputRefDemoCloud9VPC8871F024014B0437"
+      }
+    },
+    "ExportsOutputRefDemoCloud9VPCpublicSubnet1Subnet7E5CFDAB950D0894": {
+      "Value": {
+        "Ref": "DemoCloud9VPCpublicSubnet1Subnet7E5CFDAB"
+      },
+      "Export": {
+        "Name": "c9-vpc:ExportsOutputRefDemoCloud9VPCpublicSubnet1Subnet7E5CFDAB950D0894"
+      }
+    }
+  }
+}

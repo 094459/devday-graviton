@@ -1,0 +1,772 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree"
+      },
+      "c9-vpc": {
+        "id": "c9-vpc",
+        "path": "c9-vpc",
+        "children": {
+          "DemoCloud9VPC": {
+            "id": "DemoCloud9VPC",
+            "path": "c9-vpc/DemoCloud9VPC",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "c9-vpc/DemoCloud9VPC/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::VPC",
+                  "aws:cdk:cloudformation:props": {
+                    "cidrBlock": "10.44.0.0/16",
+                    "enableDnsHostnames": true,
+                    "enableDnsSupport": true,
+                    "instanceTenancy": "default",
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "c9-vpc/DemoCloud9VPC"
+                      }
+                    ]
+                  }
+                }
+              },
+              "publicSubnet1": {
+                "id": "publicSubnet1",
+                "path": "c9-vpc/DemoCloud9VPC/publicSubnet1",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "c9-vpc/DemoCloud9VPC/publicSubnet1/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "cidrBlock": "10.44.0.0/24",
+                        "vpcId": {
+                          "Ref": "DemoCloud9VPC8871F024"
+                        },
+                        "availabilityZone": {
+                          "Fn::Select": [
+                            0,
+                            {
+                              "Fn::GetAZs": ""
+                            }
+                          ]
+                        },
+                        "mapPublicIpOnLaunch": true,
+                        "tags": [
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "public"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Public"
+                          },
+                          {
+                            "key": "Name",
+                            "value": "c9-vpc/DemoCloud9VPC/publicSubnet1"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "c9-vpc/DemoCloud9VPC/publicSubnet1/Acl"
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "c9-vpc/DemoCloud9VPC/publicSubnet1/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "vpcId": {
+                          "Ref": "DemoCloud9VPC8871F024"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "c9-vpc/DemoCloud9VPC/publicSubnet1"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "c9-vpc/DemoCloud9VPC/publicSubnet1/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "DemoCloud9VPCpublicSubnet1RouteTable4F2FF692"
+                        },
+                        "subnetId": {
+                          "Ref": "DemoCloud9VPCpublicSubnet1Subnet7E5CFDAB"
+                        }
+                      }
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "c9-vpc/DemoCloud9VPC/publicSubnet1/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "DemoCloud9VPCpublicSubnet1RouteTable4F2FF692"
+                        },
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "gatewayId": {
+                          "Ref": "DemoCloud9VPCIGW7CDC61C4"
+                        }
+                      }
+                    }
+                  },
+                  "EIP": {
+                    "id": "EIP",
+                    "path": "c9-vpc/DemoCloud9VPC/publicSubnet1/EIP",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
+                      "aws:cdk:cloudformation:props": {
+                        "domain": "vpc",
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "c9-vpc/DemoCloud9VPC/publicSubnet1"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "NATGateway": {
+                    "id": "NATGateway",
+                    "path": "c9-vpc/DemoCloud9VPC/publicSubnet1/NATGateway",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::NatGateway",
+                      "aws:cdk:cloudformation:props": {
+                        "allocationId": {
+                          "Fn::GetAtt": [
+                            "DemoCloud9VPCpublicSubnet1EIP278A3B50",
+                            "AllocationId"
+                          ]
+                        },
+                        "subnetId": {
+                          "Ref": "DemoCloud9VPCpublicSubnet1Subnet7E5CFDAB"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "c9-vpc/DemoCloud9VPC/publicSubnet1"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "publicSubnet2": {
+                "id": "publicSubnet2",
+                "path": "c9-vpc/DemoCloud9VPC/publicSubnet2",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "c9-vpc/DemoCloud9VPC/publicSubnet2/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "cidrBlock": "10.44.1.0/24",
+                        "vpcId": {
+                          "Ref": "DemoCloud9VPC8871F024"
+                        },
+                        "availabilityZone": {
+                          "Fn::Select": [
+                            1,
+                            {
+                              "Fn::GetAZs": ""
+                            }
+                          ]
+                        },
+                        "mapPublicIpOnLaunch": true,
+                        "tags": [
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "public"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Public"
+                          },
+                          {
+                            "key": "Name",
+                            "value": "c9-vpc/DemoCloud9VPC/publicSubnet2"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "c9-vpc/DemoCloud9VPC/publicSubnet2/Acl"
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "c9-vpc/DemoCloud9VPC/publicSubnet2/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "vpcId": {
+                          "Ref": "DemoCloud9VPC8871F024"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "c9-vpc/DemoCloud9VPC/publicSubnet2"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "c9-vpc/DemoCloud9VPC/publicSubnet2/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "DemoCloud9VPCpublicSubnet2RouteTableC7564F18"
+                        },
+                        "subnetId": {
+                          "Ref": "DemoCloud9VPCpublicSubnet2Subnet36081424"
+                        }
+                      }
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "c9-vpc/DemoCloud9VPC/publicSubnet2/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "DemoCloud9VPCpublicSubnet2RouteTableC7564F18"
+                        },
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "gatewayId": {
+                          "Ref": "DemoCloud9VPCIGW7CDC61C4"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "IGW": {
+                "id": "IGW",
+                "path": "c9-vpc/DemoCloud9VPC/IGW",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::InternetGateway",
+                  "aws:cdk:cloudformation:props": {
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "c9-vpc/DemoCloud9VPC"
+                      }
+                    ]
+                  }
+                }
+              },
+              "VPCGW": {
+                "id": "VPCGW",
+                "path": "c9-vpc/DemoCloud9VPC/VPCGW",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::VPCGatewayAttachment",
+                  "aws:cdk:cloudformation:props": {
+                    "vpcId": {
+                      "Ref": "DemoCloud9VPC8871F024"
+                    },
+                    "internetGatewayId": {
+                      "Ref": "DemoCloud9VPCIGW7CDC61C4"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "c9-vpc/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "c9-vpc/CDKMetadata/Default"
+              }
+            }
+          },
+          "Exports": {
+            "id": "Exports",
+            "path": "c9-vpc/Exports",
+            "children": {
+              "Output{\"Ref\":\"DemoCloud9VPC8871F024\"}": {
+                "id": "Output{\"Ref\":\"DemoCloud9VPC8871F024\"}",
+                "path": "c9-vpc/Exports/Output{\"Ref\":\"DemoCloud9VPC8871F024\"}"
+              },
+              "Output{\"Ref\":\"DemoCloud9VPCpublicSubnet1Subnet7E5CFDAB\"}": {
+                "id": "Output{\"Ref\":\"DemoCloud9VPCpublicSubnet1Subnet7E5CFDAB\"}",
+                "path": "c9-vpc/Exports/Output{\"Ref\":\"DemoCloud9VPCpublicSubnet1Subnet7E5CFDAB\"}"
+              }
+            }
+          }
+        }
+      },
+      "c9-ide": {
+        "id": "c9-ide",
+        "path": "c9-ide",
+        "children": {
+          "InstanceSSM": {
+            "id": "InstanceSSM",
+            "path": "c9-ide/InstanceSSM",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "c9-ide/InstanceSSM/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "ec2.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "managedPolicyArns": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+                          ]
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              "DefaultPolicy": {
+                "id": "DefaultPolicy",
+                "path": "c9-ide/InstanceSSM/DefaultPolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "c9-ide/InstanceSSM/DefaultPolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "s3:GetObject*",
+                                "s3:GetBucket*",
+                                "s3:List*"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": [
+                                {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":s3:::",
+                                      {
+                                        "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3BucketA0173B39"
+                                      }
+                                    ]
+                                  ]
+                                },
+                                {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":s3:::",
+                                      {
+                                        "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3BucketA0173B39"
+                                      },
+                                      "/*"
+                                    ]
+                                  ]
+                                }
+                              ]
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "InstanceSSMDefaultPolicy6E4EFE93",
+                        "roles": [
+                          {
+                            "Ref": "InstanceSSMCBFA3CF0"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "Cloud9 SecurityGroup": {
+            "id": "Cloud9 SecurityGroup",
+            "path": "c9-ide/Cloud9 SecurityGroup",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "c9-ide/Cloud9 SecurityGroup/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "groupDescription": "Allow ssh access to ec2 instances from anywhere",
+                    "groupName": "cloud9-ssh-access-sg",
+                    "securityGroupEgress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "description": "Allow all outbound traffic by default",
+                        "ipProtocol": "-1"
+                      }
+                    ],
+                    "securityGroupIngress": [
+                      {
+                        "cidrIp": "18.184.138.224/27",
+                        "ipProtocol": "tcp",
+                        "fromPort": 22,
+                        "toPort": 22,
+                        "description": "allow c9 service ssh access"
+                      },
+                      {
+                        "cidrIp": "18.184.203.128/27",
+                        "ipProtocol": "tcp",
+                        "fromPort": 22,
+                        "toPort": 22,
+                        "description": "allow c9 service access"
+                      }
+                    ],
+                    "vpcId": {
+                      "Fn::ImportValue": "c9-vpc:ExportsOutputRefDemoCloud9VPC8871F024014B0437"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "DemoCloud9IDE": {
+            "id": "DemoCloud9IDE",
+            "path": "c9-ide/DemoCloud9IDE",
+            "children": {
+              "InstanceProfile": {
+                "id": "InstanceProfile",
+                "path": "c9-ide/DemoCloud9IDE/InstanceProfile",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::InstanceProfile",
+                  "aws:cdk:cloudformation:props": {
+                    "roles": [
+                      {
+                        "Ref": "InstanceSSMCBFA3CF0"
+                      }
+                    ]
+                  }
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "c9-ide/DemoCloud9IDE/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::Instance",
+                  "aws:cdk:cloudformation:props": {
+                    "availabilityZone": {
+                      "Fn::Select": [
+                        0,
+                        {
+                          "Fn::GetAZs": ""
+                        }
+                      ]
+                    },
+                    "iamInstanceProfile": {
+                      "Ref": "DemoCloud9IDEInstanceProfileB1471BCB"
+                    },
+                    "imageId": {
+                      "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmarm64gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+                    },
+                    "instanceType": "m6g.large",
+                    "securityGroupIds": [
+                      {
+                        "Fn::GetAtt": [
+                          "Cloud9SecurityGroupA8B33029",
+                          "GroupId"
+                        ]
+                      }
+                    ],
+                    "subnetId": {
+                      "Fn::ImportValue": "c9-vpc:ExportsOutputRefDemoCloud9VPCpublicSubnet1Subnet7E5CFDAB950D0894"
+                    },
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "Cloud9"
+                      }
+                    ],
+                    "userData": {
+                      "Fn::Base64": {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "#!/bin/bash\nmkdir -p $(dirname '/tmp/",
+                            {
+                              "Fn::Select": [
+                                0,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Fn::Select": [
+                                1,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "')\naws s3 cp 's3://",
+                            {
+                              "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3BucketA0173B39"
+                            },
+                            "/",
+                            {
+                              "Fn::Select": [
+                                0,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Fn::Select": [
+                                1,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "' '/tmp/",
+                            {
+                              "Fn::Select": [
+                                0,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Fn::Select": [
+                                1,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "'\nset -e\nchmod +x '/tmp/",
+                            {
+                              "Fn::Select": [
+                                0,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Fn::Select": [
+                                1,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "'\n'/tmp/",
+                            {
+                              "Fn::Select": [
+                                0,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Fn::Select": [
+                                1,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParametersfb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90S3VersionKey454B09C1"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "'"
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-hvm-arm64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": {
+            "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-hvm-arm64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
+            "path": "c9-ide/SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-hvm-arm64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter"
+          },
+          "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-hvm-arm64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118": {
+            "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-hvm-arm64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118",
+            "path": "c9-ide/SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-hvm-arm64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118"
+          },
+          "Asset": {
+            "id": "Asset",
+            "path": "c9-ide/Asset",
+            "children": {
+              "Stage": {
+                "id": "Stage",
+                "path": "c9-ide/Asset/Stage"
+              },
+              "AssetBucket": {
+                "id": "AssetBucket",
+                "path": "c9-ide/Asset/AssetBucket"
+              }
+            }
+          },
+          "AssetParameters": {
+            "id": "AssetParameters",
+            "path": "c9-ide/AssetParameters",
+            "children": {
+              "fb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90": {
+                "id": "fb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90",
+                "path": "c9-ide/AssetParameters/fb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90",
+                "children": {
+                  "S3Bucket": {
+                    "id": "S3Bucket",
+                    "path": "c9-ide/AssetParameters/fb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90/S3Bucket"
+                  },
+                  "S3VersionKey": {
+                    "id": "S3VersionKey",
+                    "path": "c9-ide/AssetParameters/fb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90/S3VersionKey"
+                  },
+                  "ArtifactHash": {
+                    "id": "ArtifactHash",
+                    "path": "c9-ide/AssetParameters/fb78639153d063f02e6188ba483e08991ea71ad807b5e9486e54511a8e606c90/ArtifactHash"
+                  }
+                }
+              }
+            }
+          },
+          "C9HostEIP": {
+            "id": "C9HostEIP",
+            "path": "c9-ide/C9HostEIP",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
+              "aws:cdk:cloudformation:props": {
+                "domain": "vpc",
+                "instanceId": {
+                  "Ref": "DemoCloud9IDE0D36E714"
+                }
+              }
+            }
+          },
+          "C9PrivateIP": {
+            "id": "C9PrivateIP",
+            "path": "c9-ide/C9PrivateIP"
+          },
+          "C9PublicIP": {
+            "id": "C9PublicIP",
+            "path": "c9-ide/C9PublicIP"
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "c9-ide/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "c9-ide/CDKMetadata/Default"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
