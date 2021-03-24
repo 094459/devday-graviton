@@ -1,7 +1,5 @@
 #!/bin/sh
 
-echo "Installing environment"
-
 curl --silent --location https://rpm.nodesource.com/setup_12.x | bash -
 yum install -y nodejs 
 yum install -y make gcc gcc-c++ tmux
@@ -12,9 +10,15 @@ export UNIX_USER_HOME="/home/ec2-user"
 export ENVIRONMENT_PATH="/home/ec2-user/environment"
 export UNIX_GROUP=$(id -g -n "$UNIX_USER")
 
-yum install -y aws-cfn-bootstrap
-yum install -y java-11-amazon-corretto
-yum install -y jq
-yum -y install git automake libtool openssl-devel ncurses-compat-libs
+echo "Installing environment"
 
+yum install -y aws-cfn-bootstrap
 mkdir /home/ec2-user/environment
+
+echo "Install jq"
+yum install -y jq
+
+echo "Installing git, compiler, depends..."
+
+yum install -y git
+yum -y install git automake libtool openssl-devel ncurses-compat-libs
