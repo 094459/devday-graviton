@@ -1,0 +1,6 @@
+-e .
+pytest
+aws-cdk.aws-ec2
+aws-cdk.aws-rds
+aws-cdk.core
+aws-cdk.iam
