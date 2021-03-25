@@ -94,12 +94,12 @@ Now keep this tab open and open a new one (or navigate back) to the AWS Console,
 * - For "Host" enter the Public IPv4 DNS details you saved above (it will be in the format of ec2-{ip}.{region}.compute.amazonaws.com)
 * Click on COPY PUBLIC KEY
 
-Now switch to the Session Manager tab, and you will now add this key to the authorized_keys file.
+Now switch to the Session Manager tab, and you will now add this key to the authorized_keys file. 
 
 ```
-$ vi authorized_keys
+$ echo {paste public key} >  authorized_keys
 ```
-Once in the editor, paste the key and save/exit.
+You can check the file to make sure the key has been added.
 
 Now return back to the AWS Cloud9 create screen and click on NEXT STEP. If all is well you will see a REVIEW page, which you can now complete by clicking on CREATE ENVIRONMENT.
 
