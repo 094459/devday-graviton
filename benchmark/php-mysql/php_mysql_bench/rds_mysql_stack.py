@@ -18,7 +18,7 @@ class RDSMySQLStack(core.Stack):
             vpc_placement=ec2.SubnetSelection(subnet_group_name="private"),
             port=3306,
             storage_encrypted=True,
-            instance_type= ec2.InstanceType("m6g.4xlarge"),
+            instance_type= ec2.InstanceType("m6g.large"),
             removal_policy=core.RemovalPolicy.DESTROY,
             deletion_protection=False,
             publicly_accessible=False,

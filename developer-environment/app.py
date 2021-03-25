@@ -14,7 +14,7 @@ app = core.App()
 
 vpc_stack = VpcStack(
     scope=app,
-    id="c9-vpc",
+    id="demo-c9-vpc",
     env=env_EU
 )
 

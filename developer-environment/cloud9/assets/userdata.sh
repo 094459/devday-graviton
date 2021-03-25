@@ -18,3 +18,21 @@ yum install -y jq
 yum -y install git automake libtool openssl-devel ncurses-compat-libs
 
 mkdir /home/ec2-user/environment
+chown ec2-user:ec2-user /home/ec2-user/environment
+
+# *** Add your own stuff here
+
+git clone https://github.com/pyenv/pyenv.git /home/ec2-user/.pyenv
+chown ec2-user:ec2-user /home/ec2-user/.pyenv
+
+cat <<'EOF' > "$UNIX_USER_HOME"/.bashrc
+# .bashrc
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+          eval "$(pyenv init -)"
+fi
+
+EOF
+

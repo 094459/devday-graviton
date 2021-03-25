@@ -51,6 +51,7 @@ rm phpMyAdmin-latest-all-languages.tar.gz
 echo "**Install PHP Benchmark**"
 
 cd
+git clone https://github.com/mysqlonarm/benchmark-suites
 git clone https://github.com/vanilla-php/benchmark-php.git
 cd benchmark-php
 sudo mv benchmark.php /var/www/html/

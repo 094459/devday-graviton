@@ -16,7 +16,7 @@ app = core.App()
 
 vpc_stack = VpcStack(
     scope=app,
-    id="vpc",
+    id="demo-vpc",
     env=env_EU
 )
 
@@ -24,7 +24,7 @@ vpc_stack = VpcStack(
 
 rds_stack = RDSMySQLStack(
     scope=app,
-    id="rdsmysql",
+    id="demo-rdsmysql",
     vpc=vpc_stack.vpc,
     env=env_EU
 )
@@ -33,7 +33,7 @@ rds_stack = RDSMySQLStack(
 
 load_stack = LoadGenStack(
     scope=app,
-    id="loadgen",
+    id="demo-loadgen",
     vpc=vpc_stack.vpc,
     env=env_EU
 )
@@ -42,7 +42,7 @@ load_stack = LoadGenStack(
 
 php_stack = PhpMysqlBenchStack(
     scope=app,
-    id="php-bench",
+    id="demo-php-bench",
     vpc=vpc_stack.vpc,
     env=env_EU
 )
