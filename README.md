@@ -132,6 +132,15 @@ $ chmod +x ./kubectl
 $ mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
 ```
 
+You should also set up your git
+
+```
+git config --global user.name "{yourname}"
+git config --global user.email {youremail}
+git config --global credential.helper '!aws codecommit credential-helper $@'
+git config --global credential.UseHttpPath true
+```
+
 ### 2. Workload choice
 
 AWS Graviton2 instances provide customers with more choice to run their workloads. When thinking about which workloads might make good candidates, you will probably want to perform some kind of assessment and analysis of your own applications to see how they perform.
@@ -169,5 +178,158 @@ I have provided within the benchmarking folder a cdk app that deploys a number o
 
 ### 3. Supporting multi architecture workloads
 
+There are two sample applications, one written in C and the other a Java Spring Boot app. We can get these up and running locally using the following commands.
 
+To run the C demo in your local VSCode or terminal
 
+```
+$ cd sample-apps\c-demo\local
+$ gcc "-DARCH=\"`uname -i`\"" hello-graviton.c -o hello
+$ ./hello
+```
+If you prefer to use docker you can use the dockerfile.
+
+```
+$ cd sample-apps\c-demo\docker-c
+$ docker build -t demo .
+$ sudo docker run demo
+```
+
+Either way, both of these should give you output like this
+
+```
+ === DevDay === 
+
+Hello, architecture from uname is aarch64
+64-bit userspace
+```
+To clean up and remove the image, use "$sudo docker image rm demo"
+
+To run the Java Springbook locally, you will need to have an OpenJDK 11 or later JDK running.
+
+```
+$ cd sample-apps\springboot-demo\
+$ ./mvnw package
+$ ./mvnw spring-boot:run
+```
+And if you open a browser and go to http://localhost:8080 you should see something like this:
+
+**Immutable images - using EC2 Image Builder to build multi arch images**
+
+This demo code shows how you can setup a CI/CD pipeline to create immutable AMI images from source code. The demo creates a build pipeline that a)builds your application and creates application artifacts, b)uses those as inputs to building an AMI using the EC2 Image Builder, before c)deploying that to an auto-scaling set.
+
+The demo creats multiple pipelines which allow you to create multi architecture AMIs for your application. From a single source code commit, you can create x86 and arm based AMIs which you can then use across any AWS instance type. Perfect to provide you with the choice for running your applications on the best workload.
+
+To build this demo yourself, you need to do the following
+
+Edit the deploy.sh file and define some unique S3 buckets. The run the command to kick off the creation of the two pipelines.
+
+```
+$ . ./deploy.sh
+```
+
+This will take around 30-45 minutes to complete, but you can keep an eye on the cloudformation screen and watch out for and resolve any issues/errors that might occur. This project will deploy the following: AWS CodeCommit repositories for x86/arm, Build pipelines for x86/arm and a deployment pipeline that uses EC2 Image Builder. A Lambda function is created that provides macros used within the Cloudformation template.
+
+The initial setup will create these environments that are identical, except that one uses an x86 and the other uses an arm based architecture.
+
+Once this is working, you should create another CodeCommit (or GitHub or something you use) repo, and then link these to both the pipelines. When you do this, when you create a change, it will kick off the pipeline and create both x86 and arm based builds that will create new AMI images and then update the auto scaling deployment set.
+
+Once you have deployed these, to view the app you have a couple of options:
+
+* The first is to create an application load balancer that maps incoming port 80 to the target port of 8080 that the Spring Boot application is listening on. You can now access the application via a browser, using the application load balancer DNS name. 
+* The second is to just open the ingres port on the security group on port 8080, limit it to your IP address. You can now access the application via a browser, using the EC2 DNS name, but appending port 8080 to the URL.
+
+You can experiment making some changes to the code and kicking off builds to see how this works and how you might be able to use this as a base for creating your own multi-arch image builds.
+
+**Multi arch container**
+
+In the next demo we will create multi architecture containers for our sample C application.
+
+Create a CodeCommit repo and commit the contents of the repo folder into this repo. You will need to update the cdk app to point to this repo.
+
+Once you have done that, use cdk to deploy the application. Before deploying however, make sure you update the base.py and pipeline.py to reflect:
+
+* the name of the codecommit repo you are using
+* the aws account and region you are deploying this into
+
+You will need to update the hello-world.yaml with the details of the Amazon ECR image repository that gets created as part of the deployment (this is by default the same name as the stack you have created, i.e. demo-graviton-multi-arch)
+
+```
+$ cdk ls
+$ cdk deploy demo-graviton-multi-arch-base
+$ cdk deploy demo-graviton-multi-arch-pipeline
+```
+Once the pipeline has run, it will create images in Amazon ECR which you can then run. You can view more info on these images by using these cli commands - I am using the default Amazon ECR repo name from the code, so change it if you have used something different:
+
+```
+$ aws ecr describe-repositories --repository-names {demo-graviton-multi-arch}
+$ aws ecr describe-images --repository-name {demo-graviton-multi-arch}
+```
+
+You can now run the images either locally on your developer setup if you have Docker running, or anywhere you run Docker. Try it on x86 and arm based systems to see what output you get. To run them use these commands:
+
+```
+$ aws ecr get-login --no-include-email --region {aws region}
+```
+the output you get from this command should be run in the terminal, which will generate a login token that is valid for a short period of time. Then run this command to run the container.
+
+```
+$ docker run  {your AWS account}.dkr.ecr.{aws region}.amazonaws.com/{Amazon ECR image - .i.e.demo-graviton-multi-arch}:latest
+```
+
+If it all goes well, it should start downloading the image locally and then output the following
+
+```
+ === DevDay === 
+
+Hello, architecture from uname is x86_64
+ Version 1.0
+
+64-bit userspace
+```
+
+When I run it from the AWS Graviton2 powered Cloud9 environment, I get the following:
+
+```
+ === DevDay === 
+
+Hello, architecture from uname is aarch64
+ Version 1.0
+
+64-bit userspace
+```
+
+I can now run my app on all AWS instance types!
+
+Make changes to the code, for example add a new line, or change the version number, commit the code and then this will kick off the pipeline and create new images. You can now run specific versions of these images, or just used :latest to get the latest versions. To run these, use the following commands:
+
+```
+$ docker pull  {your AWS account}.dkr.ecr.{aws region}.amazonaws.com/{Amazon ECR image - .i.e.demo-graviton-multi-arch}:latest
+$ docker run  {your AWS account}.dkr.ecr.{aws region}.amazonaws.com/{Amazon ECR image - .i.e.demo-graviton-multi-arch}:latest
+```
+You should now see the latest version and see the modifications you made.
+
+Now you have the container, why not try running them in an Amazon EKS cluster, and even better than that, why not try running it in some managed node clusters with x86 and arm based instances.
+
+Review the [deploy.md](deploy/deploy.md) file for details of the commands you can use to do this.
+
+To clean up the environment, just issue the following commands:
+
+```
+$ cdk destroy demo-graviton-multi-arch-pipeline
+$ cdk destroy demo-graviton-multi-arch-base
+```
+You might also have to manually remove the Amazon ECR repository if you created it as part of this demo. The CDK script does not remove that.
+
+**Multi arch container - SpringBoot**
+
+One final demo which shows the end to end CI/CD pipeline that allows you to deploy tour sample Springboot application to an Amazon EKS cluster running mixed x86 and arm nodes.
+
+First step up credentials for Docker Hub which you will store securely in AWS System Parameter Store. You will need to create the following in the region you are deploying, using values for a valid DockerHub account as values:
+
+```
+/springboot-multiarch/dockerhub/username
+/springboot-multiarch/dockerhub/password
+```
+
+Create a repo in CodeCommit, and ensure that the name of this is reflected in the pipeline_stack.py (line, 23 - default value in the code is demo-multiarch-springboot-multiarch). You should then commit into this repository the code in the "master-demo-spring-app" folder.

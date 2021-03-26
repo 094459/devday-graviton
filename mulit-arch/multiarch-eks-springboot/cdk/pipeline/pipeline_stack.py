@@ -17,10 +17,10 @@ class PipelineStack(core.Stack):
         self.eks = eks
 
         # create ECR
-        ecr_repo = ecr.Repository(self, "ECRRep", repository_name="springboot-multiarch")
+        ecr_repo = ecr.Repository(self, "ECRRep", repository_name="demo-multiarch-springboot-multiarch")
         
         # create code repo
-        code = codecommit.Repository(self, "CodeRep", repository_name="springboot-multiarch")
+        code = codecommit.Repository(self, "CodeRep", repository_name="demo-multiarch-springboot-multiarch")
         codecommit.CfnRepository.CodeProperty.branch_name="main"
 
         core.CfnOutput(self,"CodeCommitOutput", value=code.repository_clone_url_http)

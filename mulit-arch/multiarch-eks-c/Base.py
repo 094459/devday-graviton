@@ -50,7 +50,7 @@ class Base(core.Stack):
                 'AWS_ACCOUNT_ID': aws_codebuild.BuildEnvironmentVariable(
                     value='704533066374'),
                 'IMAGE_REPO_NAME': aws_codebuild.BuildEnvironmentVariable(
-                    value='graviton-multi-arch-pipeline'),
+                    value='demo-graviton-multi-arch'),
                 'IMAGE_TAG': aws_codebuild.BuildEnvironmentVariable(
                     value='latest-amd64')
             },
@@ -80,7 +80,7 @@ class Base(core.Stack):
                 'AWS_ACCOUNT_ID': aws_codebuild.BuildEnvironmentVariable(
                     value='704533066374'),
                 'IMAGE_REPO_NAME': aws_codebuild.BuildEnvironmentVariable(
-                    value='graviton-multi-arch-pipeline'),
+                    value='demo-graviton-multi-arch'),
                 'IMAGE_TAG': aws_codebuild.BuildEnvironmentVariable(
                     value='latest-arm64v8')
             },
@@ -113,7 +113,7 @@ class Base(core.Stack):
                 'AWS_ACCOUNT_ID': aws_codebuild.BuildEnvironmentVariable(
                     value='704533066374'),
                 'IMAGE_REPO_NAME': aws_codebuild.BuildEnvironmentVariable(
-                    value='graviton-multi-arch-pipeline'),
+                    value='demo-graviton-multi-arch'),
                 'IMAGE_TAG': aws_codebuild.BuildEnvironmentVariable(
                     value='latest')
             },

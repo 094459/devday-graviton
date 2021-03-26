@@ -1,14 +1,18 @@
-### Setup
+### Running your multi-arch container on Amazon EKS
 
-> If you run out of space available, rm local images and then use: sudo docker system prune
+This is a set of instructions that you can use to demonstrate how you have run your multi-arch container in a multi-arch managed node group. Change the details based on how you have created your demo containers if following from the code examples.
+
+> One thing I ran into was that I ran out of diskspace on my Cloud9 development environment. If you run out of space available, removing not needed local Docker images from the previous demos and then use: sudo docker system prune was the way I was able to free up space.
 
 Install the tools - these should already be installed if you are using the cdk installed image.
 
+```
 > $ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_arm64.tar.gz" | tar xz -C /tmp
 > $ sudo mv /tmp/eksctl /usr/local/bin
 > $ curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.17.12/2020-11-02/bin/linux/arm64/kubectl
 > $ chmod +x ./kubectl
 > $ mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+```
 
 You can now use the container built in the following example.
 
@@ -17,6 +21,7 @@ $ eksctl create cluster --name eks-multi-arch \
   --version 1.18 \
   --without-nodegroup
 ```
+
 <takes a while to build the eks node>
   
 ```

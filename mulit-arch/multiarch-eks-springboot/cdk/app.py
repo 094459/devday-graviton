@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: MIT-0
 import os
 
 from aws_cdk import core
@@ -13,7 +10,7 @@ env = core.Environment(account="704533066374",
 
 app = core.App()
 
-backend = BackendStack(app, "backend", env=env)
-pipeline = PipelineStack(app, "pipeline", eks=backend.eks, env=env)
+backend = BackendStack(app, "demo-multi-arch-springb-backend", env=env)
+pipeline = PipelineStack(app, "demo-multi-arch-springb-pipeline", eks=backend.eks, env=env)
 
 app.synth()

@@ -5,9 +5,7 @@ from aws_cdk import (
 from Base import Base
 from Pipeline import Pipeline
 
-#this doesnt work yet, need to fix!
-env_EU=core.Environment(region="eu-central-1")
-props = {'namespace': 'graviton-multi-arch-pipeline','env':'env_EU'}
+props = {'namespace': 'demo-graviton-multi-arch'}
 app = core.App()
 
 # stack for ecr, bucket, codebuild
