@@ -139,6 +139,7 @@ git config --global user.name "{yourname}"
 git config --global user.email {youremail}
 git config --global credential.helper '!aws codecommit credential-helper $@'
 git config --global credential.UseHttpPath true
+git config --global init.defaultBranch main
 ```
 
 ### 2. Workload choice
@@ -332,4 +333,41 @@ First step up credentials for Docker Hub which you will store securely in AWS Sy
 /springboot-multiarch/dockerhub/password
 ```
 
-Create a repo in CodeCommit, and ensure that the name of this is reflected in the pipeline_stack.py (line, 23 - default value in the code is demo-multiarch-springboot-multiarch). You should then commit into this repository the code in the "master-demo-spring-app" folder.
+You will need to change to the cdk directory and then deploy the backend stack first.
+
+```
+cdk deploy demo-multi-arch-springb-backend
+```
+
+Once this has completed (it might take 30-40 mins), you can deploy the pipeline, which should take a lot less time.
+
+```
+cdk deploy demo-multi-arch-springb-pipeline
+```
+
+Once you have done that, check out the empty repository that has been created (if using defaults, it will be demo-multiarch-springboot-multiarch). Copy the contents of the master-demo-spring-app into this folder and then commit this change to the repo. 
+
+> 
+> Note!Once thing to check, the default branch should be set to main. If you used the settings above, you should have this set. If your pipeline fails, it might be due to the default branch still looking for master. You will need to fix that before the pipeline will work.
+>
+
+Once the pipeline has started, it might take around 10-15 minutes for it to complete. Once it has completed, you need to go to the Cloudformation stack and copy/paste the kubectl commands that will authenticate you on your developer environment.
+
+You can now run kubectl commands against this cluster, to get the external url we issue the following command
+
+```
+$ kubectl describe ingress | grep Address 
+```
+
+You can now use the URL to access the load balanced Springboot demo application. Every time you refresh, you will see a different architecture - try it several times to see that happen.
+
+If you now make a change to the source code - you can edit the file in the CodeCommit repository page - this will trigger a rebuild/redeployment and you should see the application update automatically. The process should take around 5-10 minutes to complete.
+
+To clean up and remove the demo
+
+```
+cdk destroy demo-multi-arch-springb-pipeline
+cdk destroy demo-multi-arch-springb-backend
+```
+
+> Note! I did find that I had to manually delete the following resources after this process. You might find the second destroy eventually fails. If that happens, you can manually delete the Amazon ECR repository that was created, remove the Application Loadbalancer and then remove the VPC that was created. All these resource names are identified via the CloudFormation stack resources tab.
