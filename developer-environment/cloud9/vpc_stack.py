@@ -10,7 +10,7 @@ class VpcStack(core.Stack):
 
         self.vpc = ec2.Vpc(
             self,
-            id="DemoCloud9VPC",
+            id="DemoGravitonCloud9VPC",
             cidr="10.44.0.0/16",
             max_azs=2,
             nat_gateways=1,

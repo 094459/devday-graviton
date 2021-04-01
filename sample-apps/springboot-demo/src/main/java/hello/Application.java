@@ -1,5 +1,5 @@
-//package hello;
-package ricardo.sueiras.springbootdemo;
+package hello;
+//package ricardo.sueiras.springbootdemo;
 
 import java.util.Arrays;
 

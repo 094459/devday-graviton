@@ -14,7 +14,7 @@ app = core.App()
 
 vpc_stack = VpcStack(
     scope=app,
-    id="demo-c9-vpc",
+    id="demo-graviton-c9-vpc",
     env=env_EU
 )
 
@@ -22,7 +22,7 @@ vpc_stack = VpcStack(
 
 rds_stack = Cloud9Stack(
     scope=app,
-    id="c9-ide",
+    id="demo-graviton-c9-ide",
     vpc=vpc_stack.vpc,
     env=env_EU
 )

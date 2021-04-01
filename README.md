@@ -353,6 +353,8 @@ Once you have done that, check out the empty repository that has been created (i
 
 Once the pipeline has started, it might take around 10-15 minutes for it to complete. Once it has completed, you need to go to the Cloudformation stack and copy/paste the kubectl commands that will authenticate you on your developer environment.
 
+The two commands you need are the EKSConfigCommandXXXXX and EKSGetTokenCommandXXXXX - you can copy/paste these into your terminal. When you then run kubectl, you will be connecting to the correct resources.
+
 You can now run kubectl commands against this cluster, to get the external url we issue the following command
 
 ```

@@ -71,9 +71,9 @@ class Cloud9Stack(core.Stack):
         
         cloud9 = ec2.Instance(
             self,
-            id="DemoCloud9IDE",
+            id="DemoGravitonCloud9IDE",
             vpc=vpc,
-            instance_name="Cloud9",
+            instance_name="Cloud9Graviton",
             instance_type=ec2.InstanceType("m6g.large"),
             machine_image=amzn_linux,
             role = role,

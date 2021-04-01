@@ -1,5 +1,5 @@
-//package hello;
-package ricardo.sueiras.springbootdemo;
+package hello;
+//package ricardo.sueiras.springbootdemo;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
